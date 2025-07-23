@@ -54,6 +54,8 @@ jobs:
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           path: plan.txt
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Terraform Apply
         if: github.event_name == 'push'
