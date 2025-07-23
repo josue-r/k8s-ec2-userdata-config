@@ -21,6 +21,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install Octokit packages
+        run: npm install @octokit/rest @octokit/auth-app
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
@@ -48,6 +56,16 @@ jobs:
         run: |
           terraform plan -no-color -out=tfplan.binary > plan.txt
           cat plan.txt
+
+      - name: Comment PR using GitHub App
+        if: github.event_name == 'pull_request'
+        run: node .github/scripts/comment-pr.js
+        env:
+          APP_ID: ${{ secrets.GH_APP_ID }}
+          INSTALLATION_ID: ${{ secrets.GH_APP_INSTALLATION_ID }}
+          PRIVATE_KEY: ${{ secrets.GH_APP_PRIVATE_KEY }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
 
 
       - name: Comment PR with Terraform Plan
