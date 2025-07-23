@@ -67,22 +67,6 @@ jobs:
           PR_NUMBER: ${{ github.event.pull_request.number }}
           REPO: ${{ github.repository }}
 
-
-      # - name: Comment PR with Terraform Plan
-      #   if: github.event_name == 'pull_request'
-      #   uses: actions/github-script@v7
-      #   with:
-      #     github-token: ${{ secrets.PR_TOKEN }}
-      #     script: |
-      #       const fs = require('fs');
-      #       const body = fs.readFileSync('plan.txt', 'utf8');
-      #       await github.rest.issues.createComment({
-      #         issue_number: context.payload.pull_request.number,
-      #         owner: context.repo.owner,
-      #         repo: context.repo.repo,
-      #         body: `### 📦 Terraform Plan Result\n\`\`\`\n${body}\n\`\`\``
-      #       });
-
       - name: Terraform Apply
         if: github.event_name == 'push'
         run: terraform apply -auto-approve tfplan.binary
