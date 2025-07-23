@@ -59,7 +59,7 @@ jobs:
 
       - name: Comment PR using GitHub App
         if: github.event_name == 'pull_request'
-        run: node .github/scripts/comment-pr.js
+        run: node .github/scripts/comment-pr.mjs
         env:
           APP_ID: ${{ secrets.GH_APP_ID }}
           INSTALLATION_ID: ${{ secrets.GH_APP_INSTALLATION_ID }}
