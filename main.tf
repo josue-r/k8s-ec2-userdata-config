@@ -5,7 +5,7 @@ module "master" {
   instance_type      = "t3.micro"
   subnet_id          = aws_subnet.public[0].id
   security_group_ids = [aws_security_group.k8s.id]
-  key_name           = aws_key_pair.k8s.key_name
+  key_name           = "test_key_demo"
   user_data_path     = "${path.module}/user_data/master.sh"
 }
 
@@ -16,7 +16,7 @@ module "worker1" {
   instance_type      = "t3.micro"
   subnet_id          = aws_subnet.public[1].id
   security_group_ids = [aws_security_group.k8s.id]
-  key_name           = aws_key_pair.k8s.key_name
+  key_name           = "test_key_demo"
   user_data_path     = "${path.module}/user_data/worker.sh"
 }
 
@@ -27,6 +27,6 @@ module "worker2" {
   instance_type      = "t3.micro"
   subnet_id          = aws_subnet.public[2].id
   security_group_ids = [aws_security_group.k8s.id]
-  key_name           = aws_key_pair.k8s.key_name
+  key_name           = "test_key_demo"
   user_data_path     = "${path.module}/user_data/worker.sh"
 }
