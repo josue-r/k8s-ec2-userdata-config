@@ -1,7 +1,7 @@
 resource "aws_security_group" "k8s" {
   name        = "k8s-cluster-sg"
   description = "Allow SSH and Kubernetes API from the public internet"
-  vpc_id      = aws_vpc.k8s.id  # Use your existing VPC
+  vpc_id      = aws_vpc.k8s.id # Use your existing VPC
 
   # Allow SSH (port 22) from anywhere
   ingress {
