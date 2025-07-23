@@ -55,7 +55,7 @@ jobs:
         with:
           path: plan.txt
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PR_TOKEN }}
 
       - name: Terraform Apply
         if: github.event_name == 'push'
