@@ -7,3 +7,9 @@ variable "security_group_ids" {
 }
 variable "key_name" {}
 variable "user_data_path" {}
+
+
+variable "enabled" {
+  type    = bool
+  default = true
+}

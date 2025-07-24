@@ -1,4 +1,5 @@
 resource "aws_instance" "cluster_ec2" {
+  count                  = var.enabled ? 1 : 0
   ami                    = var.ami_id
   instance_type          = var.instance_type
   subnet_id              = var.subnet_id
