@@ -6,6 +6,7 @@ resource "aws_instance" "cluster_ec2" {
   vpc_security_group_ids = var.security_group_ids
   key_name               = var.key_name
   user_data              = file(var.user_data_path)
+  iam_instance_profile   = var.iam_instance_profile
 
   tags = {
     Name = var.name
