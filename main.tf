@@ -1,14 +1,14 @@
 module "master" {
-  source             = "./modules/ec2"
-  enabled            = false
-  name               = "k8s-master"
-  ami_id             = "ami-020cba7c55df1f615"
-  instance_type      = "t3.micro"
-  subnet_id          = aws_subnet.public[0].id
-  security_group_ids = [aws_security_group.k8s.id]
-  key_name           = "test_key_demo"
-  user_data_path     = "${path.module}/user_data/master.sh"
-  # iam_instance_profile = module.master_node_iam.iam_instance_profile_name
+  source               = "./modules/ec2"
+  enabled              = true
+  name                 = "k8s-master"
+  ami_id               = "ami-020cba7c55df1f615"
+  instance_type        = "t3.micro"
+  subnet_id            = aws_subnet.public[0].id
+  security_group_ids   = [aws_security_group.k8s.id]
+  key_name             = "test_key_demo"
+  user_data_path       = "${path.module}/user_data/master.sh"
+  iam_instance_profile = module.master_node_iam.iam_instance_profile_name
 }
 
 module "worker1" {
@@ -46,4 +46,10 @@ module "master_node_iam" {
       Resource = "arn:aws:s3:::k8s-bootstrap-artifacts/*"
     }]
   })
+}
+
+module "bootstrap_bucket" {
+  source      = "./modules/s3"
+  bucket_name = "k8s-bootstrap-artifacts"
+  environment = "dev"
 }
