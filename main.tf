@@ -8,6 +8,7 @@ module "master" {
   security_group_ids = [aws_security_group.k8s.id]
   key_name           = "test_key_demo"
   user_data_path     = "${path.module}/user_data/master.sh"
+  # iam_instance_profile = module.master_node_iam.iam_instance_profile_name
 }
 
 module "worker1" {
@@ -32,4 +33,17 @@ module "worker2" {
   security_group_ids = [aws_security_group.k8s.id]
   key_name           = "test_key_demo"
   user_data_path     = "${path.module}/user_data/worker.sh"
+}
+
+module "master_node_iam" {
+  source    = "./modules/iam"
+  role_name = "master-node-role"
+  inline_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [{
+      Effect   = "Allow",
+      Action   = ["s3:PutObject"],
+      Resource = "arn:aws:s3:::k8s-bootstrap-artifacts/*"
+    }]
+  })
 }
