@@ -51,15 +51,21 @@ jobs:
         run: terraform validate
 
       - name: Terraform Plan
-        if: github.event_name == 'schedule'
+        if: github.event_name == 'pull_request' || github.event_name == 'push'
         id: plan
         run: |
-          terraform plan -no-color -out=tfplan.binary > plan.txt
-          cat plan.txt
+          set -o pipefail
+          terraform plan -no-color -out=tfplan.binary 2>&1 | tee plan.txt
+          echo "TF_PLAN_EXIT_CODE=$?" >> $GITHUB_ENV
 
       - name: Comment PR using GitHub App
         if: github.event_name == 'pull_request'
-        run: node .github/scripts/comment-pr.mjs
+        run: |
+          if grep -q "No changes. Your infrastructure matches the configuration." plan.txt; then
+            echo "No changes in plan, skipping comment.";
+            exit 0;
+          fi
+          node .github/scripts/comment-pr.mjs
         env:
           APP_ID: ${{ secrets.GH_APP_ID }}
           INSTALLATION_ID: ${{ secrets.GH_APP_INSTALLATION_ID }}
