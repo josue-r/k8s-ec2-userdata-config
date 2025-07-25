@@ -1,6 +1,6 @@
 module "master" {
   source               = "./modules/ec2"
-  enabled              = true
+  enabled              = false
   name                 = "k8s-master"
   ami_id               = "ami-020cba7c55df1f615"
   instance_type        = "t3.micro"
