@@ -93,16 +93,3 @@ done
 
 # Now apply the custom Calico resources
 su - ubuntu -c "kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.30.0/manifests/custom-resources.yaml"
-
-# Generate token and write to S3
-JOIN_COMMAND=$(kubeadm token create --print-join-command)
-
-echo "##########
-##########
-$JOIN_COMMAND
-#############
-#############"
-
-echo "$JOIN_COMMAND" > /tmp/join.sh
-aws s3 cp --region us-east-1 /tmp/join.sh s3://k8s-bootstrap-artifacts/join-command.txt
-rm /tmp/join.sh
