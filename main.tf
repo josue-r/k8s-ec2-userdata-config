@@ -3,7 +3,7 @@ module "master" {
   enabled              = true
   name                 = "k8s-master"
   ami_id               = "ami-020cba7c55df1f615"
-  instance_type        = "t3.micro"
+  instance_type        = "t3.small"
   subnet_id            = aws_subnet.public[0].id
   security_group_ids   = [aws_security_group.k8s.id]
   key_name             = "test_key_demo"
@@ -19,7 +19,7 @@ module "worker1" {
   enabled            = true
   name               = "k8s-worker-1"
   ami_id             = "ami-020cba7c55df1f615"
-  instance_type      = "t3.micro"
+  instance_type      = "t3.small"
   subnet_id          = aws_subnet.public[1].id
   security_group_ids = [aws_security_group.k8s.id]
   key_name           = "test_key_demo"
@@ -34,7 +34,7 @@ module "worker2" {
   enabled            = true
   name               = "k8s-worker-2"
   ami_id             = "ami-020cba7c55df1f615"
-  instance_type      = "t3.micro"
+  instance_type      = "t3.small"
   subnet_id          = aws_subnet.public[2].id
   security_group_ids = [aws_security_group.k8s.id]
   key_name           = "test_key_demo"
