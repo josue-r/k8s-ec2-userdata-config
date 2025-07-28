@@ -83,17 +83,21 @@ cp -i /etc/kubernetes/admin.conf /home/ubuntu/.kube/config
 chown ubuntu:ubuntu /home/ubuntu/.kube/config
 
 # Apply Calico CNI plugin (run as ubuntu user)
-su - ubuntu -c "kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.30.0/manifests/tigera-operator.yaml"
+echo "Applying Calico tigera-operator.yaml..."
+time su - ubuntu -c "kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.30.0/manifests/tigera-operator.yaml"
 
 # Wait for the CRDs to be installed (check for the Installation CRD)
 echo "Waiting for Calico CRDs to be available..."
+start=$(date +%s)
 until su - ubuntu -c "kubectl get crd installations.operator.tigera.io" >/dev/null 2>&1; do
   sleep 5
 done
+end=$(date +%s)
+echo "CRDs available after $((end - start)) seconds"
 
-# Now apply the custom Calico resources
-su - ubuntu -c "kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.30.0/manifests/custom-resources.yaml"
-
+# Apply Calico custom resources
+echo "Applying Calico custom-resources.yaml..."
+time su - ubuntu -c "kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.30.0/manifests/custom-resources.yaml"
 # Generate token and write to S3
 JOIN_COMMAND=$(kubeadm token create --print-join-command)
 
