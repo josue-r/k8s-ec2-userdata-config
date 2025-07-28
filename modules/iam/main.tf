@@ -14,9 +14,9 @@ resource "aws_iam_role" "master_node_ec2" {
 }
 
 resource "aws_iam_role_policy" "master_node_ec2_policy" {
-  name   = "${var.role_name}-policy"
+  name   = var.policy_name
   role   = aws_iam_role.master_node_ec2.id
-  policy = var.inline_policy
+  policy = file(var.policy_file)
 }
 
 resource "aws_iam_instance_profile" "master_node_ec2_instance_profile" {

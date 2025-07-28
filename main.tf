@@ -36,20 +36,34 @@ module "worker2" {
 }
 
 module "master_node_iam" {
-  source    = "./modules/iam"
-  role_name = "master-node-role"
-  inline_policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [{
-      Effect   = "Allow",
-      Action   = ["s3:PutObject"],
-      Resource = "arn:aws:s3:::k8s-bootstrap-artifacts/*"
-    }]
-  })
+  source      = "./modules/iam"
+  role_name   = "master-node-role"
+  policy_name = "MasterNodePolicy"
+  policy_file = "${path.module}/iam_policies/master_node_policy.json"
+}
+
+module "worker_node_iam" {
+  source      = "./modules/iam"
+  role_name   = "worker-node-role"
+  policy_name = "WorkerNodePolicy"
+  policy_file = "${path.module}/iam_policies/worker_node_policy.json"
+}
+
+module "lambda_trigger_iam" {
+  source      = "./modules/iam"
+  role_name   = "lambda-trigger-role"
+  policy_name = "LambdaTriggerPolicy"
+  policy_file = "${path.module}/iam_policies/lambda_trigger_policy.json"
 }
 
 module "bootstrap_bucket" {
   source      = "./modules/s3"
   bucket_name = "k8s-bootstrap-artifacts"
   environment = "dev"
+}
+
+module "lambda_trigger" {
+  source          = "./modules/lambda_trigger"
+  lambda_role_arn = module.lambda_trigger_iam.role_arn
+  s3_bucket_name  = "k8s-bootstrap-artifacts"
 }
