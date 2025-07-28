@@ -59,10 +59,11 @@ module "worker_node_iam" {
 }
 
 module "lambda_trigger_iam" {
-  source      = "./modules/iam"
-  role_name   = "lambda-trigger-role"
-  policy_name = "LambdaTriggerPolicy"
-  policy_file = "${path.module}/iam_policies/lambda_trigger_policy.json"
+  source          = "./modules/iam"
+  role_name       = "lambda-trigger-role"
+  policy_name     = "LambdaTriggerPolicy"
+  policy_file     = "${path.module}/iam_policies/lambda_trigger_policy.json"
+  trusted_service = "lambda.amazonaws.com"
 }
 
 module "bootstrap_bucket" {
