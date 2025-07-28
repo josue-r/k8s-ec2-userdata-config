@@ -3,7 +3,12 @@ variable "role_name" {
   description = "Name of the IAM role"
 }
 
-variable "inline_policy" {
+variable "policy_file" {
   type        = string
-  description = "JSON encoded IAM policy"
+  description = "Path to the IAM policy JSON file"
+}
+
+variable "policy_name" {
+  type        = string
+  description = "Policy name"
 }

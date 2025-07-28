@@ -19,8 +19,19 @@ net.ipv4.ip_forward = 1
 EOF
 
 # Install required packages for Docker repo setup
-apt-get update
-apt-get install -y apt-transport-https ca-certificates curl gpg awscli
+apt-get update -y
+apt-get install -y apt-transport-https ca-certificates curl gpg
+
+# Install AWS CLI v2
+if ! command -v aws &> /dev/null; then
+  apt-get update
+  apt-get install -y unzip curl
+
+  curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+  unzip awscliv2.zip
+  ./aws/install
+  rm -rf awscliv2.zip aws
+fi
 
 # Add Docker GPG key
 mkdir -p /etc/apt/keyrings
@@ -70,3 +81,28 @@ kubeadm init \
 mkdir -p /home/ubuntu/.kube
 cp -i /etc/kubernetes/admin.conf /home/ubuntu/.kube/config
 chown ubuntu:ubuntu /home/ubuntu/.kube/config
+
+# Apply Calico CNI plugin (run as ubuntu user)
+su - ubuntu -c "kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.30.0/manifests/tigera-operator.yaml"
+
+# Wait for the CRDs to be installed (check for the Installation CRD)
+echo "Waiting for Calico CRDs to be available..."
+until su - ubuntu -c "kubectl get crd installations.operator.tigera.io" >/dev/null 2>&1; do
+  sleep 5
+done
+
+# Now apply the custom Calico resources
+su - ubuntu -c "kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.30.0/manifests/custom-resources.yaml"
+
+# Generate token and write to S3
+JOIN_COMMAND=$(kubeadm token create --print-join-command)
+
+echo "##########
+##########
+$JOIN_COMMAND
+#############
+#############"
+
+echo "$JOIN_COMMAND" > /tmp/join.sh
+aws s3 cp --region us-east-1 /tmp/join.sh s3://k8s-bootstrap-artifacts/join-command.txt
+rm /tmp/join.sh
