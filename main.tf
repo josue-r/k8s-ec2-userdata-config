@@ -1,6 +1,6 @@
 module "master" {
   source               = "./modules/ec2"
-  enabled              = false
+  enabled              = true
   name                 = "k8s-master"
   ami_id               = "ami-020cba7c55df1f615"
   instance_type        = "t3.micro"
@@ -16,7 +16,7 @@ module "master" {
 
 module "worker1" {
   source             = "./modules/ec2"
-  enabled            = false
+  enabled            = true
   name               = "k8s-worker-1"
   ami_id             = "ami-020cba7c55df1f615"
   instance_type      = "t3.micro"
@@ -31,7 +31,7 @@ module "worker1" {
 
 module "worker2" {
   source             = "./modules/ec2"
-  enabled            = false
+  enabled            = true
   name               = "k8s-worker-2"
   ami_id             = "ami-020cba7c55df1f615"
   instance_type      = "t3.micro"
