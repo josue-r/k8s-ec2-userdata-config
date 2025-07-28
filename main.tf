@@ -9,18 +9,24 @@ module "master" {
   key_name             = "test_key_demo"
   user_data_path       = "${path.module}/user_data/master.sh"
   iam_instance_profile = module.master_node_iam.iam_instance_profile_name
+  extra_tags = {
+    Role = "master-node"
+  }
 }
 
 module "worker1" {
   source             = "./modules/ec2"
   enabled            = false
   name               = "k8s-worker-1"
-  ami_id             = "subnet-84c1fbaa"
+  ami_id             = "ami-020cba7c55df1f615"
   instance_type      = "t3.micro"
   subnet_id          = aws_subnet.public[1].id
   security_group_ids = [aws_security_group.k8s.id]
   key_name           = "test_key_demo"
   user_data_path     = "${path.module}/user_data/worker.sh"
+  extra_tags = {
+    Role = "worker-node"
+  }
 }
 
 module "worker2" {
@@ -33,6 +39,9 @@ module "worker2" {
   security_group_ids = [aws_security_group.k8s.id]
   key_name           = "test_key_demo"
   user_data_path     = "${path.module}/user_data/worker.sh"
+  extra_tags = {
+    Role = "worker-node"
+  }
 }
 
 module "master_node_iam" {
